@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fingerprint Attendance - Mock UI</title>
+<style>
+  :root{
+    --card-w: 360px;
+    --gap: 12px;
+    --card-bg: #fff;
+    --muted: #666;
+  }
+  body{
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    background:linear-gradient(180deg,#eef2ff,#fff);
+    margin:0;
+    padding:20px;
+  }
+  .card{
+    width:var(--card-w);
+    background:var(--card-bg);
+    box-shadow:0 6px 18px rgba(25,25,60,.08);
+    padding:18px;
+    border-radius:10px;
+  }
+  h2{margin:0 0 12px 0;font-size:1.1rem}
+  .row{display:flex;gap:10px;align-items:center}
+  label{display:block;font-size:.92rem;margin-bottom:6px;color:var(--muted)}
+  input[type="text"], input[type="password"], input[type="time"], input[type="number"]{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    box-sizing:border-box;
+    font-size:0.95rem;
+  }
+  .controls{display:flex;gap:10px;margin-top:14px}
+  button{
+    padding:8px 12px;border-radius:8px;border:0;background:#2b6cb0;color:#fff;font-weight:600;
+    cursor:pointer;
+  } 
+  button.ghost{background:#eee;color:#333}
+  button.warn{background:#d9534f}
+  .muted{color:var(--muted);font-size:.9rem;margin-top:6px}
+  .status-badge{display:inline-block;padding:6px 10px;border-radius:12px;font-weight:700}
+  .present{background:#d4f7d9;color:#046b12}
+  .absent{background:#ffdcd8;color:#8a1b12}
+  .ontime{background:#d4f7d9;color:#046b12}
+  .late{background:#ffdcd8;color:#8a1b12}
+  .small{font-size:.9rem}
+  /* page sections */
+  section{display:none}
+  section.active{display:block}
+  .field-inline{display:flex;gap:8px;align-items:center}
+  .radio-row{display:flex;gap:14px;align-items:center;margin-top:8px}
+  .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .note{font-size:.85rem;color:#444;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Page 1: Login Page -->
+  <section id="page-login" class="active">
+    <h2>Login page</h2>
+    <label>Username
+      <input id="login-username" type="text" placeholder="enter username">
+    </label>
+    <label>Password
+      <input id="login-password" type="password" placeholder="password">
+    </label>
+    <div class="controls">
+      <button id="btn-login">Login</button>
+      <button class="ghost" id="btn-login-clear">Clear</button>
+    </div>
+    <p class="muted">Use username <code>admin</code> and password <code>1234</code> (demo)</p>
+  </section>
+
+  <!-- Page 2: Home page -->
+  <section id="page-home">
+    <h2>Home page</h2>
+    <label>Lecturer Id
+      <input id="lec-id" type="text" placeholder="Lec ID (optional)">
+    </label>
+    <label>Student Id
+      <input id="student-id-home" type="text" placeholder="enter student id (e.g. S001)">
+    </label>
+    <div class="controls">
+      <button id="btn-clear-home" class="ghost">Clear</button>
+      <button id="btn-submit-home">Submit</button>
+      <button id="btn-back-home" class="ghost">Back</button>
+    </div>
+    <p class="muted">Press <strong>Submit</strong> to view student info.</p>
+  </section>
+
+  <!-- Page 3: Student info page -->
+  <section id="page-student">
+    <h2>Student info</h2>
+    <label>Student Id
+      <input id="s-stud-id" type="text" readonly>
+    </label>
+    <label>Student Name
+      <input id="s-stud-name" type="text" readonly>
+    </label>
+
+    <label>Attendance
+      <input id="s-attendance" type="text" readonly>
+    </label>
+
+    <label>Attended time
+      <input id="s-time" type="text" readonly>
+    </label>
+
+    <label>Status
+      <div id="s-status" class="status-badge small">—</div>
+    </label>
+
+    <div class="controls">
+      <button id="btn-more">More</button>
+      <button id="btn-back-student" class="ghost">Back</button>
+    </div>
+
+    <p class="note">Color meaning: <span class="status-badge present small">present</span> <span class="status-badge absent small">absent</span> — Time color: <span class="status-badge ontime small">on-time</span> <span class="status-badge late small">late</span></p>
+  </section>
+
+  <!-- Page 4: More page (stats) -->
+  <section id="page-more">
+    <h2>More page</h2>
+    <label>Student Id
+      <input id="m-stud-id" type="text" readonly>
+    </label>
+    <label>Count (total sessions)
+      <input id="m-count" type="number" readonly>
+    </label>
+    <label># of late
+      <input id="m-late" type="number" readonly>
+    </label>
+    <label>Total present
+      <input id="m-present" type="number" readonly>
+    </label>
+
+    <div class="controls">
+      <button id="btn-update">Update</button>
+      <button id="btn-back-more" class="ghost">Back</button>
+    </div>
+  </section>
+
+  <!-- Page 5: Update page -->
+  <section id="page-update">
+    <h2>Update page</h2>
+    <label>Student Id
+      <input id="u-stud-id" type="text" readonly>
+    </label>
+    <label>Student Name
+      <input id="u-stud-name" type="text" readonly>
+    </label>
+
+    <label>Attendance</label>
+    <div class="radio-row">
+      <label><input type="radio" name="attendance" value="present"> present</label>
+      <label><input type="radio" name="attendance" value="absent"> absent</label>
+    </div>
+
+    <label>Reason</label>
+    <div class="radio-row">
+      <label><input type="radio" name="reason" value="medical"> Medical issue</label>
+      <label><input type="radio" name="reason" value="sports"> Sports</label>
+      <label><input type="radio" name="reason" value="other"> Other</label>
+    </div>
+
+    <div class="foot">
+      <button id="btn-ok">OK</button>
+      <button id="btn-clear-update" class="ghost">Clear</button>
+      <button id="btn-back-update" class="ghost">Back</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/*
+  Simple single-page navigation and demo data.
+  No server required. Keep code small and readable.
+*/
+
+const pages = {
+  login: document.getElementById('page-login'),
+  home: document.getElementById('page-home'),
+  student: document.getElementById('page-student'),
+  more: document.getElementById('page-more'),
+  update: document.getElementById('page-update')
+};
+
+function show(pageName){
+  Object.values(pages).forEach(s=>s.classList.remove('active'));
+  pages[pageName].classList.add('active');
+}
+
+/* Demo student DB (in-memory) */
+const students = {
+  // id: {name, attendance: 'present'|'absent', time: 'HH:MM', total: n, late: n, presentCount: n}
+  'S001': {name:'Chamara Silva', attendance:'present', time:'08:05', total: 5, late:1, presentCount:4},
+  'S002': {name:'Namal Perera', attendance:'absent', time:'', total: 5, late:0, presentCount:3}
+};
+
+/* --- Login page --- */
+document.getElementById('btn-login-clear').addEventListener('click', ()=>{
+  document.getElementById('login-username').value='';
+  document.getElementById('login-password').value='';
+});
+document.getElementById('btn-login').addEventListener('click', ()=>{
+  const u = document.getElementById('login-username').value.trim();
+  const p = document.getElementById('login-password').value;
+  if(u==='admin' && p==='1234'){
+    show('home');
+  } else {
+    alert('Invalid credentials. Demo: admin / 1234');
+  }
+});
+
+/* --- Home page --- */
+document.getElementById('btn-clear-home').addEventListener('click', ()=>{
+  document.getElementById('lec-id').value='';
+  document.getElementById('student-id-home').value='';
+});
+document.getElementById('btn-back-home').addEventListener('click', ()=> show('login'));
+
+document.getElementById('btn-submit-home').addEventListener('click', ()=>{
+  const sid = document.getElementById('student-id-home').value.trim().toUpperCase();
+  if(!sid){ alert('Enter a student id (e.g. S001)'); return; }
+  // If student not found, create a default blank record
+  if(!students[sid]){
+    students[sid] = {name:'(Unknown)', attendance:'absent', time:'', total:0, late:0, presentCount:0};
+  }
+  loadStudentPage(sid);
+  show('student');
+});
+
+/* --- Student page --- */
+function setStatusBadge(el, attendance, time){
+  el.className = 'status-badge small';
+  if(attendance === 'present'){
+    el.classList.add('present');
+    if(time){
+      // consider >08:00 late (demo rule)
+      const [hh,mm] = time.split(':').map(x=>+x||0);
+      if(hh>8 || (hh===8 && mm>0)) el.textContent = 'present — late';
+      else el.textContent = 'present — on-time';
+    } else {
+      el.textContent = 'present';
+    }
+  } else {
+    el.classList.add('absent');
+    el.textContent = 'absent';
+  }
+}
+function loadStudentPage(sid){
+  const s = students[sid];
+  document.getElementById('s-stud-id').value = sid;
+  document.getElementById('s-stud-name').value = s.name;
+  document.getElementById('s-attendance').value = s.attendance || '';
+  document.getElementById('s-time').value = s.time || '';
+  setStatusBadge(document.getElementById('s-status'), s.attendance, s.time);
+}
+document.getElementById('btn-back-student').addEventListener('click', ()=> show('home'));
+document.getElementById('btn-more').addEventListener('click', ()=>{
+  const sid = document.getElementById('s-stud-id').value;
+  if(!sid) return show('home');
+  const s = students[sid];
+  document.getElementById('m-stud-id').value = sid;
+  document.getElementById('m-count').value = s.total || 0;
+  document.getElementById('m-late').value = s.late || 0;
+  document.getElementById('m-present').value = s.presentCount || 0;
+  show('more');
+});
+
+/* --- More page --- */
+document.getElementById('btn-back-more').addEventListener('click', ()=> show('student'));
+document.getElementById('btn-update').addEventListener('click', ()=>{
+  const sid = document.getElementById('m-stud-id').value;
+  if(!sid) return show('student');
+  const s = students[sid];
+  document.getElementById('u-stud-id').value = sid;
+  document.getElementById('u-stud-name').value = s.name;
+  // clear radios
+  document.querySelectorAll('input[name="attendance"]').forEach(r=>r.checked=false);
+  document.querySelectorAll('input[name="reason"]').forEach(r=>r.checked=false);
+  show('update');
+});
+
+/* --- Update page --- */
+document.getElementById('btn-clear-update').addEventListener('click', ()=>{
+  document.querySelectorAll('input[name="attendance"]').forEach(r=>r.checked=false);
+  document.querySelectorAll('input[name="reason"]').forEach(r=>r.checked=false);
+});
+document.getElementById('btn-back-update').addEventListener('click', ()=> show('more'));
+
+document.getElementById('btn-ok').addEventListener('click', ()=>{
+  const sid = document.getElementById('u-stud-id').value;
+  if(!sid){ alert('No student selected'); return; }
+  const att = document.querySelector('input[name="attendance"]:checked');
+  if(!att){ alert('Please select attendance (present/absent)'); return; }
+  const reason = document.querySelector('input[name="reason"]:checked');
+  // Update demo DB
+  const s = students[sid];
+  const wasPresent = s.attendance === 'present';
+  s.attendance = att.value;
+  // set time for demo: current HH:MM if present
+  if(att.value === 'present'){
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    s.time = hh + ':' + mm;
+    s.total = (s.total || 0) + 1;
+    s.presentCount = (s.presentCount || 0) + 1;
+    // consider >08:00 late
+    const late = (now.getHours()>8) || (now.getHours()===8 && now.getMinutes()>0);
+    if(late){ s.late = (s.late || 0) + 1; }
+  } else {
+    // absent - increase total only
+    s.time = '';
+    s.total = (s.total || 0) + 1;
+  }
+
+  // show updated pages
+  loadStudentPage(sid);
+  // refresh more page values as well
+  document.getElementById('m-count').value = s.total;
+  document.getElementById('m-late').value = s.late || 0;
+  document.getElementById('m-present').value = s.presentCount || 0;
+
+  alert('Record updated' + (reason ? (' — reason: ' + reason.value) : ''));
+  show('student');
+});
+
+/* Small UX: clicking Back from home returns to login */
+document.getElementById('btn-back-home').addEventListener('click', ()=> {
+  // for demo behave as logout
+  if(confirm('Logout and return to login?')) show('login');
+});
+
+/* Initialize fields */
+(function initDemo(){
+  // put a default student id into home for convenience
+  document.getElementById('student-id-home').value = 'S001';
+})();
+</script>
+
+</body>
+</html>
