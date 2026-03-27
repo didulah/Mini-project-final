@@ -2,7 +2,7 @@
 -- stId integer(6) NOT NULL PRIMARY KEY,
 -- stName varchar(20) NOT NULL);
 
--- insert into student values(249000,'Student 1');
+-- insert into student values(249001,'Student 2');
 
 -- select*from student;
 
