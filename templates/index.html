@@ -243,10 +243,10 @@ document.getElementById('btn-submit-home').addEventListener('click', ()=>{
       document.getElementById('s-stud-name').value = data.stName;
 
       // temporary values (we will fix later)
-      document.getElementById('s-attendance').value = "present";
-      document.getElementById('s-time').value = "08:00";
+      document.getElementById('s-attendance').value = data.status;
+      document.getElementById('s-time').value = data.time;
 
-      setStatusBadge(document.getElementById('s-status'), "present", "08:00");
+      setStatusBadge(document.getElementById('s-status'), data.status, data.time);
 
       show('student');
     })
