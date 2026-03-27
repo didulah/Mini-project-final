@@ -59,3 +59,22 @@ def mark():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# print attendance report
+from flask import render_template
+
+@app.route('/report/<int:id>')
+def report(id):
+    conn = get_db()
+
+    student = conn.execute(
+        "SELECT * FROM student WHERE stId=?",
+        (id,)
+    ).fetchone()
+
+    records = conn.execute(
+        "SELECT * FROM attendence WHERE stId=?",
+        (id,)
+    ).fetchall()
+
+    return render_template("report.html", student=student, records=records)
