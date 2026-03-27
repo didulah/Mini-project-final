@@ -20,11 +20,30 @@ def home():
 @app.route('/student/<int:id>')
 def get_student(id):
     conn = get_db()
+
     student = conn.execute(
         "SELECT * FROM student WHERE stId=?",
         (id,)
     ).fetchone()
-    return dict(student)
+
+    attendance = conn.execute(
+        "SELECT * FROM attendence WHERE stId=? ORDER BY attendedTime DESC LIMIT 1",
+        (id,)
+    ).fetchone()
+
+    if student is None:
+        return {"error": "not found"}, 404
+
+    result = dict(student)
+
+    if attendance:
+        result["status"] = attendance["status"]
+        result["time"] = attendance["attendedTime"]
+    else:
+        result["status"] = "absent"
+        result["time"] = ""
+
+    return result
 
 # mark attendance
 @app.route('/mark', methods=['POST'])
