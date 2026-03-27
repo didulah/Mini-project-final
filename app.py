@@ -10,9 +10,11 @@ def get_db():
     return conn
 
 # test route
+from flask import render_template
+
 @app.route('/')
 def home():
-    return "Server is running"
+    return render_template("index.html")
 
 # get student
 @app.route('/student/<int:id>')
