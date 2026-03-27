@@ -364,6 +364,14 @@ document.getElementById('btn-back-home').addEventListener('click', ()=> {
   // put a default student id into home for convenience
   document.getElementById('student-id-home').value = 'S001';
 })();
+function printReport(){
+    const sid = document.getElementById('s-stud-id').value;
+    if(!sid){
+        alert("No student selected");
+        return;
+    }
+    window.open('/report/' + sid, '_blank');
+}
 </script>
 
 </body>
