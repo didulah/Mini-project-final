@@ -204,11 +204,7 @@ function show(pageName){
 }
 
 /* Demo student DB (in-memory) */
-const students = {
-  // id: {name, attendance: 'present'|'absent', time: 'HH:MM', total: n, late: n, presentCount: n}
-  'S001': {name:'Chamara Silva', attendance:'present', time:'08:05', total: 5, late:1, presentCount:4},
-  'S002': {name:'Namal Perera', attendance:'absent', time:'', total: 5, late:0, presentCount:3}
-};
+
 
 /* --- Login page --- */
 document.getElementById('btn-login-clear').addEventListener('click', ()=>{
@@ -233,14 +229,30 @@ document.getElementById('btn-clear-home').addEventListener('click', ()=>{
 document.getElementById('btn-back-home').addEventListener('click', ()=> show('login'));
 
 document.getElementById('btn-submit-home').addEventListener('click', ()=>{
-  const sid = document.getElementById('student-id-home').value.trim().toUpperCase();
-  if(!sid){ alert('Enter a student id (e.g. S001)'); return; }
-  // If student not found, create a default blank record
-  if(!students[sid]){
-    students[sid] = {name:'(Unknown)', attendance:'absent', time:'', total:0, late:0, presentCount:0};
+  const sid = document.getElementById('student-id-home').value.trim();
+
+  if(!sid){
+    alert('Enter a student id');
+    return;
   }
-  loadStudentPage(sid);
-  show('student');
+
+  fetch('/student/' + sid)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('s-stud-id').value = data.stId;
+      document.getElementById('s-stud-name').value = data.stName;
+
+      // temporary values (we will fix later)
+      document.getElementById('s-attendance').value = "present";
+      document.getElementById('s-time').value = "08:00";
+
+      setStatusBadge(document.getElementById('s-status'), "present", "08:00");
+
+      show('student');
+    })
+    .catch(error => {
+      alert("Student not found");
+    });
 });
 
 /* --- Student page --- */
